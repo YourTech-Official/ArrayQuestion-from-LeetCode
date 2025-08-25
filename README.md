@@ -15,7 +15,7 @@ Otherwise, store x → i in the map and continue.
 
 This is O(n) time and O(n) extra space.
 
-# Step-by-step on your example
+## 🔎Dry Run Example
 
 1. Input: nums = [2, 7, 11, 15], target = 9
 
@@ -28,7 +28,7 @@ This is O(n) time and O(n) extra space.
 2. i=1, x=7, need y=9-7=2
    seen does have 2 at index 0 → return [0, 1] ✅
    
-# Minimal pseudocode
+## Minimal pseudocode
 
 seen = empty hash map
 for i from 0 to n-1:
@@ -38,9 +38,10 @@ for i from 0 to n-1:
         return [seen[y], i]
     seen[x] = i
    
-# C solution with a simple hash table (linear probing)
+## C solution with a simple hash table (linear probing)
+- Note :- Full code is available in the file Hashing_In_Array
 
-# What the C hashmap is doing (step by step)
+## What the C hashmap is doing (step by step)
 
 hash_int(x) maps any integer (even negatives) to a table index 0..TABLE_SIZE-1.
 
@@ -62,6 +63,32 @@ hash_int(x) maps any integer (even negatives) to a table index 0..TABLE_SIZE-1.
     
 3.  If the slot has our key, return the stored index.
 
+
 Otherwise probe forward (h+1, h+2, …) until you find it or hit an empty slot.
 
 Because we only insert each number once and look each complement up once, the average cost per operation is O(1), giving overall O(n) time and O(n) space.
+
+
+## javaScript Hashing 
+- Note :- Full code is available in the file JavaScript_Hashing
+
+## Approach
+- Use a hash map to store numbers while iterating.
+- For each number `x`, compute `need = target - x`.
+- If `need` is already in the hash map, return the indices.
+- Otherwise, store `x` in the hash map.
+- 
+## 🔎Dry Run Example
+
+Input:
+
+- nums = [2,7,11,15], target = 9
+
+
+- i=0, nums[0]=2, need=7
+- seen = {} → 7 not found → store seen[2]=0.
+
+- i=1, nums[1]=7, need=2
+- seen = {2:0} → 2 is found → return [0,1].
+
+- ✅ Output: [0,1].
