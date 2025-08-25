@@ -1,0 +1,26 @@
+function twoSum(nums, target){
+const seen = {};
+
+for(let i = o; i < nums.length; i++){
+const need = target - nums[i];
+
+if(seen[need] !== undefined){
+return [seen[need], i];
+}
+seen[nums[i]] = i;
+}
+return [];
+}
+
+// option - 2
+
+function twoSum(nums, target){
+        const seen = new map();
+for(let i = 0; i < nums.length; i++){
+const need = target - nums[i];
+if(seen.has(need)){
+retun [seen.get(need), i];
+}
+seen.set(nums[i], i);
+}
+return [];
