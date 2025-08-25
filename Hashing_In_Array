@@ -21,6 +21,14 @@ static int hash_int(int key) {
     return (int)h;
 }
 
+//Another way to Ensure non-negative 
+/* static int hash_int(int key) {
+    int h = key % TABLE_SIZE;   // remainder can be negative
+    if (h < 0) h += TABLE_SIZE; // fix it
+    return h;
+}
+*/
+
 HashMap* hm_create(void) {
     HashMap *m = (HashMap*)malloc(sizeof(HashMap));
     m->data = (Entry*)calloc(TABLE_SIZE, sizeof(Entry));
