@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TABLE_SIZE 20011  // a prime to reduce collisions
+
+typedef struct {
+    int key;    // the number (nums[i])
+    int value;  // its index i
+    int used;   // 0 = empty, 1 = occupied
+} Entry;
+
+typedef struct {
+    Entry *data;
+} HashMap;
+
+// Ensure non-negative and within table range
+static int hash_int(int key) {
+    long long k = key;
+    long long h = k % TABLE_SIZE;
+    if (h < 0) h += TABLE_SIZE;
+    return (int)h;
+}
+
+HashMap* hm_create(void) {
+    HashMap *m = (HashMap*)malloc(sizeof(HashMap));
+    m->data = (Entry*)calloc(TABLE_SIZE, sizeof(Entry));
+    return m;
+}
+
+void hm_free(HashMap *m) {
+    if (!m) return;
+    free(m->data);
+    free(m);
+}
+
+// Insert (key -> value). If key already exists, update value.
+// Linear probing: try h, h+1, h+2, ...
+void hm_put(HashMap *m, int key, int value) {
+    int h = hash_int(key);
+    for (int step = 0; step < TABLE_SIZE; step++) {
+        int idx = (h + step) % TABLE_SIZE;
+        if (!m->data[idx].used || m->data[idx].key == key) {
+            m->data[idx].key = key;
+            m->data[idx].value = value;
+            m->data[idx].used = 1;
+            return;
+        }
+    }
+    // For this problem TABLE_SIZE is large enough we won't hit "full" in practice.
+}
+
+// Returns 1 and sets *out if found; otherwise returns 0
+int hm_get(HashMap *m, int key, int *out) {
+    int h = hash_int(key);
+    for (int step = 0; step < TABLE_SIZE; step++) {
+        int idx = (h + step) % TABLE_SIZE;
+        if (!m->data[idx].used) {
+            // Empty slot encountered: key not present
+            return 0;
+        }
+        if (m->data[idx].used && m->data[idx].key == key) {
+            *out = m->data[idx].value;
+            return 1;
+        }
+    }
+    return 0; // not found
+}
+
+/**
+ * LeetCode-style signature:
+ * returnSize is set to 2, and we malloc an array of 2 indices.
+ */
+int* twoSum(int* nums, int numsSize, int target, int* returnSize){
+    *returnSize = 2;
+    int *ans = (int*)malloc(2 * sizeof(int));
+    HashMap *map = hm_create();
+
+    for (int i = 0; i < numsSize; i++) {
+        int x = nums[i];
+        int need = target - x;
+
+        int j;
+        if (hm_get(map, need, &j)) {
+            // Found complement 'need' at index j
+            ans[0] = j;
+            ans[1] = i;
+            hm_free(map);
+            return ans;
+        }
+        // Otherwise, remember current value -> index
+        hm_put(map, x, i);
+    }
+
+    // Per problem statement, solution exists; just in case:
+    ans[0] = ans[1] = -1;
+    hm_free(map);
+    return ans;
+}
+
+
+int main() {
+    int nums[] = {2,7,11,15};
+    int n = sizeof(nums)/sizeof(nums[0]);
+    int target = 9;
+    int rs;
+    int* res = twoSum(nums, n, target, &rs);
+    printf("[%d, %d]\n", res[0], res[1]); // [0, 1]
+    free(res);
+    return 0;
+}
+
